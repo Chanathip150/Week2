@@ -51,8 +51,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-void BottonMatrixUpdate() ;
 
+void BottonMatrixUpdate() ;
 //Button Timestamp
 uint32_t ButtonMatrixTimeStamp = 0 ;
 /* USER CODE END PFP */
