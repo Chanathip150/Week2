@@ -287,7 +287,7 @@ GPIO_TypeDef* ButtonmatrixPort[8] = {GPIOA,GPIOB,GPIOB,GPIOB,GPIOA,GPIOC,GPIOB,G
 uint16_t ButtonMatrixPin[8] = {GPIO_PIN_10,GPIO_PIN_3,GPIO_PIN_5,GPIO_PIN_4
 								,GPIO_PIN_9,GPIO_PIN_7,GPIO_PIN_6,GPIO_PIN_7} ;
 uint8_t ButtonMatrixRow = 0 ;    //what R now
-;
+
 
 void BottonMatrixUpdate()
 {
