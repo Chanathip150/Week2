@@ -99,7 +99,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
+	  if(ButtonMatrixState == 0x8000)
+	  {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	  }
+	  else if(ButtonMatrixState == 0x400)
+	  {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	  }
+	  else if(ButtonMatrixState == 0x20)
+	  	  {
+	  		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	  	  }
+	  else if(ButtonMatrixState == 0x1)
+	  	  {
+	  		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	  	  }
+	  else
+	  {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	  }
+
+
+	  /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 	  BottonMatrixUpdate();
@@ -264,33 +286,37 @@ static void MX_GPIO_Init(void)
 GPIO_TypeDef* ButtonmatrixPort[8] = {GPIOA,GPIOB,GPIOB,GPIOB,GPIOA,GPIOC,GPIOB,GPIOA};
 uint16_t ButtonMatrixPin[8] = {GPIO_PIN_10,GPIO_PIN_3,GPIO_PIN_5,GPIO_PIN_4
 								,GPIO_PIN_9,GPIO_PIN_7,GPIO_PIN_6,GPIO_PIN_7} ;
-uint8_t ButtonMatrixLine = 0 ;    //what R now
-uint8_t ButtonMatrixRow = 0 ;
+uint8_t ButtonMatrixRow = 0 ;    //what R now
+;
 
 void BottonMatrixUpdate()
 {
 	if(HAL_GetTick() - ButtonMatrixTimeStamp >= 100)
 	{
-		 ButtonMatrixTimeStamp = HAL_GetTick() ;
+
+		ButtonMatrixTimeStamp = HAL_GetTick() ;
 		 int i ;
 		 for(i=0 ; i<4 ; ++i)
 		 {//0-3
 			GPIO_PinState Pinstate = HAL_GPIO_ReadPin(ButtonmatrixPort[i], ButtonMatrixPin[i]);
-			if(Pinstate == GPIO_PIN_RESET)
+			if(Pinstate == GPIO_PIN_RESET) // Button Press
 			{
-				ButtonMatrixState |= (uint16_t)1 << (i + ButtonMatrixRow *4 ) ;
+				ButtonMatrixState |= (uint16_t)1 << (i + ButtonMatrixRow *4 ) ;  // i = 3//0b0000000000000000 | 0b1000
 			}
 			else
 			{
-				ButtonMatrixState &= ~((uint16_t)1 << (i + ButtonMatrixRow *4 ));
+				ButtonMatrixState &= ~((uint16_t)1 << (i + ButtonMatrixRow *4 )); //0b0000000000000000 & ~(0b1000)  //ตำเเหน่งที่ไม่กดเป็น 0
 
 			}
 		 }
+		 //Set Rn
+		 uint8_t NowOutputPin = ButtonMatrixRow + 4 ;
+		 HAL_GPIO_WritePin(ButtonmatrixPort[NowOutputPin], ButtonMatrixPin[NowOutputPin], GPIO_PIN_SET) ;	//Setปัจจุบัน
 
-		 uint8_t NewOutputPin = ButtonMatrixLine + 4 ;
-		 HAL_GPIO_WritePin(ButtonmatrixPort[NewOutputPin], ButtonMatrixPin[NewOutputPin], GPIO_PIN_SET) ;
 		 // update New Row
-		 ButtonMatrixRow = (ButtonMatrixRow +1) % 4 ;
+		 ButtonMatrixRow = (ButtonMatrixRow +1) % 4 ; // วน 0 - 3 ถ้าเป็น 4 ก็จะ 0 โดย %
+
+		 // Reset Rn+1
 		 uint8_t NextOutputPin = ButtonMatrixRow + 4 ;
 		 HAL_GPIO_WritePin(ButtonmatrixPort[NextOutputPin], ButtonMatrixPin[NextOutputPin], GPIO_PIN_RESET);
 
